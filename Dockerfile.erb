@@ -1,0 +1,55 @@
+FROM bcit/alpine:3.9
+# vim: syntax=dockerfile
+
+LABEL maintainer="<%= maintainer %>"
+LABEL version="<%= version %>"
+
+ENV VERSION "<%= version %>"
+ENV CONFDIR /etc/dovecot
+ENV CONFDROPDIR /etc/dovecot.d
+ENV SECRETSDIR /etc/ssl/dovecot
+ENV TLS_KEY /etc/ssl/dovecot/server.key
+ENV TLS_CERT /etc/ssl/dovecot/server.pem
+<% unless database == '' %>
+ENV DATABASE <%= database %>
+<% end %>
+
+RUN apk add --no-cache \
+    dovecot=<%= version %> \<% unless database.empty? %>
+    dovecot-<%= database %>=<%= version %> \<% end %>
+    dovecot-fts-solr=<%= version %> \
+    dovecot-ldap=<%= version %> \
+    dovecot-lmtpd=<%= version %> \
+    dovecot-pigeonhole-plugin=<%= version %> \
+    dovecot-pop3d=<%= version %> \
+    dovecot-submissiond=<%= version %>
+
+RUN touch $CONFDIR/conf.d/.keep \
+ && tar -czf /dovecot-confdrop.tar.gz -C $CONFDIR/conf.d . \
+ && rm -rf $CONFDIR/conf.d \
+ && mkdir $CONFDROPDIR \
+ && chown 0:0 $CONFDROPDIR \
+ && chmod 755 $CONFDROPDIR
+
+COPY dovecot.conf.patch /dovecot.conf.patch
+RUN patch $CONFDIR/dovecot.conf < /dovecot.conf.patch \
+  && rm -f /dovecot.conf.patch
+
+RUN touch $CONFDIR/.keep \
+ && tar -czf /dovecot-conf.tar.gz -C $CONFDIR . \
+ && rm -rf $CONFDIR $SECRETSDIR \
+ && mkdir $CONFDIR $SECRETSDIR \
+ && chown 0:0 $CONFDIR $SECRETSDIR \
+ && chmod 755 $CONFDIR \
+ && chmod 750 $SECRETSDIR
+
+VOLUME $CONFDIR
+VOLUME $CONFDROPDIR
+VOLUME $SECRETSDIR
+
+COPY 70-dovecot-conf.sh /docker-entrypoint.d/70-dovecot-conf.sh
+COPY 75-dovecot-keygen.sh /docker-entrypoint.d/75-dovecot-keygen.sh
+
+EXPOSE 110 143 993 995
+
+CMD ["/usr/sbin/dovecot", "-F"]
