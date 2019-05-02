@@ -1,4 +1,5 @@
 FROM bcit/alpine:3.9
+# vim: syntax=dockerfile
 
 LABEL maintainer="jesse_weisner@bcit.ca"
 LABEL version="2.3.5.1-r0"
