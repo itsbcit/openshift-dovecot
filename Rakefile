@@ -33,17 +33,17 @@ task :default do
 
   tags.each do |tag|
       sh "docker tag #{org_name}/#{image_name}:#{version} #{org_name}/#{image_name}:#{tag}"
-      # sh "docker push #{org_name}/#{image_name}:#{tag}"
+      sh "docker push #{org_name}/#{image_name}:#{tag}"
   end
 
-  # databases.each do |database|
-  #   render_template("Dockerfile.erb", "Dockerfile-#{database}", binding)
-  #   sh "docker build -t #{org_name}/#{image_name}:#{version}-#{database} -f Dockerfile-#{database} ."
-  #   # sh "docker push #{org_name}/#{database}-#{image_name}:#{version}"
+  databases.each do |database|
+    render_template("Dockerfile.erb", "Dockerfile-#{database}", binding)
+    sh "docker build -t #{org_name}/#{image_name}:#{version}-#{database} -f Dockerfile-#{database} ."
+    sh "docker push #{org_name}/#{image_name}:#{version}-#{database}"
 
-  #   tags.each do |tag|
-  #       sh "docker tag #{org_name}/#{image_name}:#{version}-#{database} #{org_name}/#{image_name}:#{tag}-#{database}"
-  #       # sh "docker push #{org_name}/#{image_name}:#{tag}"
-  #   end
-  # end
+    tags.each do |tag|
+        sh "docker tag #{org_name}/#{image_name}:#{version}-#{database} #{org_name}/#{image_name}:#{tag}-#{database}"
+        sh "docker push #{org_name}/#{image_name}:#{tag}-#{database}"
+    end
+  end
 end
