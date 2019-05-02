@@ -9,7 +9,7 @@ ENV CONFDIR /etc/dovecot
 ENV CONFDROPDIR /etc/dovecot.d
 ENV SECRETSDIR /etc/ssl/dovecot
 ENV TLS_KEY /etc/ssl/dovecot/server.key
-ENV TLS_CERT /etc/ssl/dovecot/server.crt
+ENV TLS_CERT /etc/ssl/dovecot/server.pem
 ENV DATABASE mysql
 
 RUN apk add --no-cache \
@@ -24,13 +24,17 @@ RUN apk add --no-cache \
 
 RUN touch $CONFDIR/conf.d/.keep \
  && tar -czf /dovecot-confdrop.tar.gz -C $CONFDIR/conf.d . \
- && rm -rf /etc/dovecot/conf.d \
+ && rm -rf $CONFDIR/conf.d \
  && mkdir $CONFDROPDIR \
  && chown 0:0 $CONFDROPDIR \
  && chmod 755 $CONFDROPDIR
 
+COPY dovecot.conf.patch /dovecot.conf.patch
+RUN patch $CONFDIR/dovecot.conf < /dovecot.conf.patch \
+  && rm -f /dovecot.conf.patch
+
 RUN touch $CONFDIR/.keep \
- && tar -czf /dovecot-confdrop.tar.gz -C $CONFDIR . \
+ && tar -czf /dovecot-conf.tar.gz -C $CONFDIR . \
  && rm -rf $CONFDIR $SECRETSDIR \
  && mkdir $CONFDIR $SECRETSDIR \
  && chown 0:0 $CONFDIR $SECRETSDIR \
@@ -42,7 +46,8 @@ VOLUME $CONFDROPDIR
 VOLUME $SECRETSDIR
 
 COPY 70-dovecot-conf.sh /docker-entrypoint.d/70-dovecot-conf.sh
+COPY 75-dovecot-keygen.sh /docker-entrypoint.d/75-dovecot-keygen.sh
 
-ENTRYPOINT ["/sbin/tini", "--", "/docker-entrypoint.sh"]
+EXPOSE 110 143 993 995
 
-CMD ['/usr/sbin/dovecot', '-F']
+CMD ["/usr/sbin/dovecot", "-F"]
