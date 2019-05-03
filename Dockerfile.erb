@@ -7,7 +7,10 @@ LABEL version="<%= version %>"
 ENV VERSION "<%= version %>"
 ENV CONFDIR /etc/dovecot
 ENV CONFDROPDIR /etc/dovecot.d
+ENV PROTODROPDIR /etc/dovecot-protocols.d
+ENV LOCALSTATEDIR /var/lib/dovecot
 ENV SECRETSDIR /etc/ssl/dovecot
+ENV PIDDIR /run
 ENV TLS_KEY /etc/ssl/dovecot/server.key
 ENV TLS_CERT /etc/ssl/dovecot/server.pem
 <% unless database == '' %>
@@ -25,6 +28,12 @@ RUN apk add --no-cache \
     dovecot-submissiond=<%= version %>
 COPY 10-master.conf $CONFDIR/conf.d/10-master.conf
 
+RUN touch /usr/share/dovecot/protocols.d/.keep \
+ && tar czf /dovecot-protocols.tar.gz -C /usr/share/dovecot/protocols.d . \
+ && mkdir $PROTODROPDIR \
+ && chown 0:0 $PROTODROPDIR \
+ && chmod 775 $PROTODROPDIR
+
 RUN touch $CONFDIR/conf.d/.keep \
  && tar -czf /dovecot-confdrop.tar.gz -C $CONFDIR/conf.d . \
  && rm -rf $CONFDIR/conf.d \
@@ -34,16 +43,19 @@ RUN touch $CONFDIR/conf.d/.keep \
 
 
 RUN touch $CONFDIR/.keep \
- && tar -czf /dovecot-conf.tar.gz -C $CONFDIR . \
- && rm -rf $CONFDIR $SECRETSDIR \
- && mkdir $CONFDIR $SECRETSDIR \
- && chown 0:0 $CONFDIR $SECRETSDIR \
- && chmod 755 $CONFDIR \
- && chmod 750 $SECRETSDIR
+ && tar czf /dovecot-conf.tar.gz -C $CONFDIR . \
+ && rm -rf $CONFDIR $SECRETSDIR $LOCALSTATEDIR $PIDDIR \
+ && mkdir $CONFDIR $SECRETSDIR $LOCALSTATEDIR $PIDDIR \
+ && chown 0:0 $CONFDIR $SECRETSDIR $LOCALSTATEDIR $PIDDIR \
+ && chmod 775 $CONFDIR $LOCALSTATEDIR $PIDDIR \
+ && chmod 770 $SECRETSDIR
 
 VOLUME $CONFDIR
 VOLUME $CONFDROPDIR
+VOLUME $PROTODROPDIR
 VOLUME $SECRETSDIR
+VOLUME $LOCALSTATEDIR
+VOLUME $PIDDIR
 
 COPY 70-dovecot-conf.sh /docker-entrypoint.d/70-dovecot-conf.sh
 COPY 75-dovecot-keygen.sh /docker-entrypoint.d/75-dovecot-keygen.sh
