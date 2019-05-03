@@ -23,6 +23,7 @@ RUN apk add --no-cache \
     dovecot-pigeonhole-plugin=<%= version %> \
     dovecot-pop3d=<%= version %> \
     dovecot-submissiond=<%= version %>
+COPY 10-master.conf $CONFDIR/conf.d/10-master.conf
 
 RUN touch $CONFDIR/conf.d/.keep \
  && tar -czf /dovecot-confdrop.tar.gz -C $CONFDIR/conf.d . \
@@ -31,9 +32,6 @@ RUN touch $CONFDIR/conf.d/.keep \
  && chown 0:0 $CONFDROPDIR \
  && chmod 755 $CONFDROPDIR
 
-COPY dovecot.conf.patch /dovecot.conf.patch
-RUN patch $CONFDIR/dovecot.conf < /dovecot.conf.patch \
-  && rm -f /dovecot.conf.patch
 
 RUN touch $CONFDIR/.keep \
  && tar -czf /dovecot-conf.tar.gz -C $CONFDIR . \
