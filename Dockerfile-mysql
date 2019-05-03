@@ -62,7 +62,7 @@ VOLUME $SECRETSDIR
 VOLUME $LOCALSTATEDIR
 VOLUME $PIDDIR
 
-WORKDIR $LOCALSTATEDIR
+WORKDIR $HOME
 
 COPY 70-dovecot-conf.sh /docker-entrypoint.d/70-dovecot-conf.sh
 COPY 75-dovecot-keygen.sh /docker-entrypoint.d/75-dovecot-keygen.sh
