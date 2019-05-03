@@ -40,7 +40,7 @@ RUN touch /usr/share/dovecot/protocols.d/.keep \
  && chmod 775 $PROTODROPDIR
 
 RUN touch $CONFDIR/conf.d/.keep \
- && tar -czf /dovecot-confdrop.tar.gz -C $CONFDIR/conf.d . \
+ && tar czf /dovecot-confdrop.tar.gz -C $CONFDIR/conf.d . \
  && rm -rf $CONFDIR/conf.d \
  && mkdir $CONFDROPDIR \
  && chown 0:0 $CONFDROPDIR \
