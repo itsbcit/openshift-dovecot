@@ -44,7 +44,7 @@ RUN touch $CONFDIR/conf.d/.keep \
  && rm -rf $CONFDIR/conf.d \
  && mkdir $CONFDROPDIR \
  && chown 0:0 $CONFDROPDIR \
- && chmod 755 $CONFDROPDIR
+ && chmod 775 $CONFDROPDIR
 
 
 RUN touch $CONFDIR/.keep \
