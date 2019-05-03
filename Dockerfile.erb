@@ -26,6 +26,7 @@ RUN apk add --no-cache \
     dovecot-pigeonhole-plugin=<%= version %> \
     dovecot-pop3d=<%= version %> \
     dovecot-submissiond=<%= version %>
+COPY dovecot.conf $CONFDIR/dovecot.conf
 COPY 10-master.conf $CONFDIR/conf.d/10-master.conf
 
 RUN touch /usr/share/dovecot/protocols.d/.keep \
