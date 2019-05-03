@@ -19,6 +19,7 @@ ENV DATABASE <%= database %>
 <% end %>
 
 RUN apk add --no-cache \
+    libcap \
     dovecot=<%= version %> \<% unless database.empty? %>
     dovecot-<%= database %>=<%= version %> \<% end %>
     dovecot-fts-solr=<%= version %> \
@@ -27,6 +28,8 @@ RUN apk add --no-cache \
     dovecot-pigeonhole-plugin=<%= version %> \
     dovecot-pop3d=<%= version %> \
     dovecot-submissiond=<%= version %>
+RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/dovecot
+
 COPY dovecot.conf $CONFDIR/dovecot.conf
 COPY 10-master.conf $CONFDIR/conf.d/10-master.conf
 
