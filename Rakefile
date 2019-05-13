@@ -9,41 +9,65 @@ def render_template(template, output, scope)
   end
 end
 
+maintainer = 'jesse_weisner@bcit.ca'
+org_name = 'bcit'
+image_name = 'openshift-dovecot'
+databases = [ 'mysql', 'pgsql', 'sql' ]
+database = ''
+version = '2.3.5.1-r0'
+version_segments = version.split('.')
+patch_segments = version_segments[3].split('-')
+tags = [
+  "#{version_segments[0]}.#{version_segments[1]}.#{version_segments[2]}.#{patch_segments[0]}",
+  "#{version_segments[0]}.#{version_segments[1]}.#{version_segments[2]}",
+  "#{version_segments[0]}.#{version_segments[1]}",
+  'latest'
+]
+
 desc "Update Dockerfile templates"
 task :default do
-
-  maintainer = 'jesse_weisner@bcit.ca'
-  org_name = 'bcit'
-  image_name = 'openshift-dovecot'
-  databases = [ 'mysql', 'pgsql', 'sql' ]
-  database = ''
-  version = '2.3.5.1-r0'
-  version_segments = version.split('.')
-  patch_segments = version_segments[3].split('-')
-  tags = [
-    "#{version_segments[0]}.#{version_segments[1]}.#{version_segments[2]}.#{patch_segments[0]}",
-    "#{version_segments[0]}.#{version_segments[1]}.#{version_segments[2]}",
-    "#{version_segments[0]}.#{version_segments[1]}",
-    'latest'
-  ]
-
   render_template("Dockerfile.erb", "Dockerfile", binding)
-  sh "docker build -t #{org_name}/#{image_name}:#{version} ."
-  sh "docker push #{org_name}/#{image_name}:#{version}"
-
-  tags.each do |tag|
-      sh "docker tag #{org_name}/#{image_name}:#{version} #{org_name}/#{image_name}:#{tag}"
-      sh "docker push #{org_name}/#{image_name}:#{tag}"
-  end
 
   databases.each do |database|
     render_template("Dockerfile.erb", "Dockerfile-#{database}", binding)
+  end
+end
+
+desc "Build docker images"
+task :build do
+  sh "docker build -t #{org_name}/#{image_name}:#{version} ."
+
+  databases.each do |database|
     sh "docker build -t #{org_name}/#{image_name}:#{version}-#{database} -f Dockerfile-#{database} ."
+  end
+end
+
+desc "Tag docker images"
+task :tag do
+  tags.each do |tag|
+    sh "docker tag #{org_name}/#{image_name}:#{version} #{org_name}/#{image_name}:#{tag}"
+  end
+
+  databases.each do |database|
+    tags.each do |tag|
+      sh "docker tag #{org_name}/#{image_name}:#{version}-#{database} #{org_name}/#{image_name}:#{tag}-#{database}"
+    end
+  end
+end
+
+desc "Push to Docker Hub"
+task :push do
+  sh "docker push #{org_name}/#{image_name}:#{version}"
+
+  tags.each do |tag|
+    sh "docker push #{org_name}/#{image_name}:#{tag}"
+  end
+
+  databases.each do |database|
     sh "docker push #{org_name}/#{image_name}:#{version}-#{database}"
 
     tags.each do |tag|
-        sh "docker tag #{org_name}/#{image_name}:#{version}-#{database} #{org_name}/#{image_name}:#{tag}-#{database}"
-        sh "docker push #{org_name}/#{image_name}:#{tag}-#{database}"
+      sh "docker push #{org_name}/#{image_name}:#{tag}-#{database}"
     end
   end
 end
