@@ -24,8 +24,17 @@ tags = [
   'latest'
 ]
 
-desc "Update Dockerfile templates"
+desc "Template, build, tag, push"
 task :default do
+  Rake::Task[:Dockerfile].invoke
+  Rake::Task[:build].invoke
+  Rake::Task[:test].invoke
+  Rake::Task[:tag].invoke
+  Rake::Task[:push].invoke
+end
+
+desc "Update Dockerfile templates"
+task :Dockerfile do
   render_template("Dockerfile.erb", "Dockerfile", binding)
 
   databases.each do |database|
