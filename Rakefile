@@ -51,6 +51,11 @@ task :build do
   end
 end
 
+desc "Test docker images"
+task :test do
+  puts "lol"
+end
+
 desc "Tag docker images"
 task :tag do
   tags.each do |tag|
