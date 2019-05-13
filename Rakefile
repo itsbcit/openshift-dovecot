@@ -53,7 +53,12 @@ end
 
 desc "Test docker images"
 task :test do
+  puts "Running tests on #{org_name}/#{image_name}:#{version}"
   puts "lol"
+  databases.each do |database|
+    puts "Running tests on #{org_name}/#{image_name}:#{version}-#{database}"
+    puts "lol"
+  end
 end
 
 desc "Tag docker images"
