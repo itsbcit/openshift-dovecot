@@ -70,6 +70,6 @@ WORKDIR $HOME
 COPY 70-dovecot-conf.sh /docker-entrypoint.d/70-dovecot-conf.sh
 COPY 75-dovecot-keygen.sh /docker-entrypoint.d/75-dovecot-keygen.sh
 
-EXPOSE 110 143 993 995
+EXPOSE 143 993 995
 
 CMD ["/usr/sbin/dovecot", "-F"]
