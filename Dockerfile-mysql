@@ -2,9 +2,9 @@ FROM bcit/alpine:3.9
 # vim: syntax=dockerfile
 
 LABEL maintainer="jesse_weisner@bcit.ca"
-LABEL version="2.3.5.1-r0"
+LABEL version="2.3.6-r0"
 
-ENV VERSION "2.3.5.1-r0"
+ENV VERSION "2.3.6-r0"
 ENV CONFDIR /etc/dovecot
 ENV CONFDROPDIR /etc/dovecot.d
 ENV PROTODROPDIR /etc/dovecot-protocols.d
@@ -19,14 +19,14 @@ ENV DATABASE mysql
 
 RUN apk add --no-cache \
     libcap \
-    dovecot=2.3.5.1-r0 \
-    dovecot-mysql=2.3.5.1-r0 \
-    dovecot-fts-solr=2.3.5.1-r0 \
-    dovecot-ldap=2.3.5.1-r0 \
-    dovecot-lmtpd=2.3.5.1-r0 \
-    dovecot-pigeonhole-plugin=2.3.5.1-r0 \
-    dovecot-pop3d=2.3.5.1-r0 \
-    dovecot-submissiond=2.3.5.1-r0
+    dovecot=2.3.6-r0 \
+    dovecot-mysql=2.3.6-r0 \
+    dovecot-fts-solr=2.3.6-r0 \
+    dovecot-ldap=2.3.6-r0 \
+    dovecot-lmtpd=2.3.6-r0 \
+    dovecot-pigeonhole-plugin=2.3.6-r0 \
+    dovecot-pop3d=2.3.6-r0 \
+    dovecot-submissiond=2.3.6-r0
 
 RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/dovecot
 

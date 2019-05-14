@@ -12,13 +12,13 @@ end
 maintainer = 'jesse_weisner@bcit.ca'
 org_name = 'bcit'
 image_name = 'openshift-dovecot'
+database = ''
 databases = [ 'mysql', 'pgsql', 'sql' ]
-version = '2.3.5.1-r0'
+version = '2.3.6-r0'
 version_segments = version.split('.')
-patch_segments = version_segments[3].split('-')
+patch_segments = version_segments[2].split('-')
 tags = [
-  "#{version_segments[0]}.#{version_segments[1]}.#{version_segments[2]}.#{patch_segments[0]}",
-  "#{version_segments[0]}.#{version_segments[1]}.#{version_segments[2]}",
+  "#{version_segments[0]}.#{version_segments[1]}.#{patch_segments[0]}",
   "#{version_segments[0]}.#{version_segments[1]}",
   'latest'
 ]
