@@ -13,7 +13,6 @@ maintainer = 'jesse_weisner@bcit.ca'
 org_name = 'bcit'
 image_name = 'openshift-dovecot'
 databases = [ 'mysql', 'pgsql', 'sql' ]
-database = ''
 version = '2.3.5.1-r0'
 version_segments = version.split('.')
 patch_segments = version_segments[3].split('-')
