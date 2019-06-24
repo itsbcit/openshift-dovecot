@@ -18,6 +18,10 @@ ENV TLS_CERT /etc/ssl/dovecot/server.pem
 <% unless database == '' %>
 ENV DATABASE <%= database %>
 <% end %>
+ENV VMAIL_USER vmail
+ENV VMAIL_UID 10001
+ENV VMAIL_GROUP vmail
+ENV VMAIL_GID 10001
 
 RUN apk add --no-cache \
     libcap \
@@ -58,6 +62,9 @@ RUN touch $CONFDIR/.keep \
  && chmod 770 $SECRETSDIR
 
 RUN chmod 1777 /run
+
+RUN addgroup -g $VMAIL_GID -S $VMAIL_GROUP \
+ && adduser -u $VMAIL_UID -G $VMAIL_GROUP -H -h /dev/null -s /sbin/nologin -S $VMAIL_USER
 
 VOLUME $CONFDIR
 VOLUME $CONFDROPDIR

@@ -1,7 +1,7 @@
 FROM bcit/alpine:3.9
 # vim: syntax=dockerfile
 
-LABEL maintainer="jesse_weisner@bcit.ca"
+LABEL maintainer="jesse_weisner@bcit.ca, Juraj Ontkanin"
 LABEL version="2.3.6-r0"
 
 ENV VERSION "2.3.6-r0"
@@ -16,6 +16,10 @@ ENV HOME $LOCALSTATEDIR
 ENV TLS_KEY /etc/ssl/dovecot/server.key
 ENV TLS_CERT /etc/ssl/dovecot/server.pem
 ENV DATABASE mysql
+ENV VMAIL_USER vmail
+ENV VMAIL_UID 10001
+ENV VMAIL_GROUP vmail
+ENV VMAIL_GID 10001
 
 RUN apk add --no-cache \
     libcap \
@@ -56,6 +60,9 @@ RUN touch $CONFDIR/.keep \
  && chmod 770 $SECRETSDIR
 
 RUN chmod 1777 /run
+
+RUN addgroup -g $VMAIL_GID -S $VMAIL_GROUP \
+ && adduser -u $VMAIL_UID -G $VMAIL_GROUP -H -h /dev/null -s /sbin/nologin -S $VMAIL_USER
 
 VOLUME $CONFDIR
 VOLUME $CONFDROPDIR

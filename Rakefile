@@ -9,7 +9,7 @@ def render_template(template, output, scope)
   end
 end
 
-maintainer = 'jesse_weisner@bcit.ca'
+maintainer = 'jesse_weisner@bcit.ca, Juraj Ontkanin'
 org_name = 'bcit'
 image_name = 'openshift-dovecot'
 database = ''
