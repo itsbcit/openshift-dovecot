@@ -43,10 +43,10 @@ end
 
 desc "Build docker images"
 task :build do
-  sh "docker build -t #{org_name}/#{image_name}:#{version} ."
+  sh "docker build -t #{org_name}/#{image_name}:#{version} . --no-cache --pull"
 
   databases.each do |database|
-    sh "docker build -t #{org_name}/#{image_name}:#{version}-#{database} -f Dockerfile-#{database} ."
+    sh "docker build -t #{org_name}/#{image_name}:#{version}-#{database} -f Dockerfile-#{database} . --no-cache --pull"
   end
 end
 
