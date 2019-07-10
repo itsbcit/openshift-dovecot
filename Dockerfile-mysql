@@ -4,6 +4,8 @@ FROM bcit/alpine:3.9
 LABEL maintainer="jesse_weisner@bcit.ca, Juraj Ontkanin"
 LABEL version="2.3.6-r0"
 
+ENV DOCKERIZE_ENV production
+
 ENV VERSION "2.3.6-r0"
 ENV CONFDIR /etc/dovecot
 ENV CONFDROPDIR /etc/dovecot.d
