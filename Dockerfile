@@ -57,7 +57,9 @@ RUN mkdir -p \
     "$VMAIL_INDEX"
 
 RUN sed -i "s/^#\s*listen\s*=.*/listen = \*/g" /etc/dovecot/dovecot.conf \
- && sed -i "s;^#\s*base_dir\s*=.*;base_dir = /run/dovecot/;g" /etc/dovecot/dovecot.conf
+ && sed -i "s;^#\s*base_dir\s*=.*;base_dir = /run/dovecot/;g" /etc/dovecot/dovecot.conf \
+ && sed -i "s/^#\s*default_login_user\s*=.*/default_login_user = ${RUNUSER}/g" /etc/dovecot/conf.d/10-master.conf \
+ && sed -i "s/^#\s*default_internal_user\s*=.*/default_internal_user = ${RUNUSER}\ndefault_internal_group = root/g" /etc/dovecot/conf.d/10-master.conf
 
 ## Configuration: /usr/share/dovecot/protocols.d
 RUN cp --dereference -r /usr/share/dovecot/protocols.d/* "${CONFIGDIR_PROTO}"/ \
