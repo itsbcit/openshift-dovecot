@@ -1,0 +1,13 @@
+---
+image_name: dovecot
+labels:
+  maintainer: "jesse@weisner.ca, Juraj Ontkanin"
+files:
+  - 70-dovecot-conf.sh
+  - 75-dovecot-keygen.sh
+variants:
+  '':
+  'mysql':
+  'pgsql':
+vars:
+  dovecot_version: "2.3.6-r0"

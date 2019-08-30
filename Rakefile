@@ -1,91 +1,61 @@
-require "erb"
+# frozen_string_literal: true
 
-# @ripienaar https://www.devco.net/archives/2010/11/18/a_few_rake_tips.php
-def render_template(template, output, scope)
-  tmpl = File.read(template)
-  erb = ERB.new(tmpl, 0, "<>")
-  File.open(output, "w") do |f|
-    f.puts erb.result(scope)
+require 'erb'
+require 'fileutils'
+require 'tempfile'
+require 'yaml'
+require 'open-uri'
+
+Dir.glob('lib/*.rb').each { |l| load l unless File.exist?("local/#{l[4..-1]}") } if Dir.exist?('lib')
+Dir.glob('local/*.rb').each { |l| load l } if Dir.exist?('local')
+
+if File.exist?('metadata.yaml')
+  local_metadata = YAML.safe_load(File.read('metadata.yaml'))
+else
+  puts('WARNING: metadata.yaml not found.')
+  local_metadata = {}
+end
+
+puts('WARNING: Rakefile library not found.') unless File.exist?('lib')
+
+if File.exist?('lib/metadata-defaults.yaml')
+  default_metadata = YAML.safe_load(File.read('lib/metadata-defaults.yaml'))
+else
+  puts('WARNING: metadata defaults not found.')
+  default_metadata = {}
+end
+
+$metadata = default_metadata.merge(local_metadata)
+
+if File.exist?('metadata.yaml') && File.exist?('lib')
+  $images = build_objects_array(
+    metadata: $metadata,
+    build_id: build_timestamp
+  )
+end
+
+desc 'Install Rakefile support files'
+task :install do
+  open('https://github.com/itsbcit/docker-rakefile/releases/latest/download/lib.zip') do |archive|
+    FileUtils.remove_entry('lib') if File.exist?('lib')
+    tempfile = Tempfile.new(['lib', '.zip'])
+    File.open(tempfile.path, 'wb') do |f|
+      f.write(archive.read)
+    end
+    system('unzip', tempfile.path)
+    tempfile.unlink
   end
 end
 
-maintainer = 'jesse_weisner@bcit.ca, Juraj Ontkanin'
-org_name = 'bcit'
-image_name = 'openshift-dovecot'
-database = ''
-databases = [ 'mysql', 'pgsql', 'sql' ]
-version = '2.3.6-r0'
-version_segments = version.split('.')
-patch_segments = version_segments[2].split('-')
-tags = [
-  "#{version_segments[0]}.#{version_segments[1]}.#{patch_segments[0]}",
-  "#{version_segments[0]}.#{version_segments[1]}",
-  'latest'
-]
-
-desc "Template, build, tag, push"
-task :default do
-  Rake::Task[:Dockerfile].invoke
-  Rake::Task[:build].invoke
-  Rake::Task[:test].invoke
-  Rake::Task[:tag].invoke
-  # Rake::Task[:push].invoke
-end
-
-desc "Update Dockerfile templates"
-task :Dockerfile do
-  render_template("Dockerfile.erb", "Dockerfile", binding)
-
-  databases.each do |database|
-    render_template("Dockerfile.erb", "Dockerfile-#{database}", binding)
-  end
-end
-
-desc "Build docker images"
-task :build do
-  sh "docker build -t #{org_name}/#{image_name}:#{version} . --no-cache --pull"
-
-  databases.each do |database|
-    sh "docker build -t #{org_name}/#{image_name}:#{version}-#{database} -f Dockerfile-#{database} . --no-cache --pull"
-  end
-end
-
-desc "Test docker images"
-task :test do
-  puts "Running tests on #{org_name}/#{image_name}:#{version}"
-  puts "lol"
-  databases.each do |database|
-    puts "Running tests on #{org_name}/#{image_name}:#{version}-#{database}"
-    puts "lol"
-  end
-end
-
-desc "Tag docker images"
-task :tag do
-  tags.each do |tag|
-    sh "docker tag #{org_name}/#{image_name}:#{version} #{org_name}/#{image_name}:#{tag}"
-  end
-
-  databases.each do |database|
-    tags.each do |tag|
-      sh "docker tag #{org_name}/#{image_name}:#{version}-#{database} #{org_name}/#{image_name}:#{tag}-#{database}"
+desc 'Update Rakefile to latest release version'
+task :update do
+  Rake::Task[:install].invoke
+  open('https://github.com/itsbcit/docker-rakefile/releases/latest/download/Rakefile') do |rakefile|
+    File.open('Rakefile', 'wb') do |f|
+      f.write(rakefile.read)
     end
   end
 end
 
-desc "Push to Docker Hub"
-task :push do
-  sh "docker push #{org_name}/#{image_name}:#{version}"
-
-  tags.each do |tag|
-    sh "docker push #{org_name}/#{image_name}:#{tag}"
-  end
-
-  databases.each do |database|
-    sh "docker push #{org_name}/#{image_name}:#{version}-#{database}"
-
-    tags.each do |tag|
-      sh "docker push #{org_name}/#{image_name}:#{tag}-#{database}"
-    end
-  end
-end
+Dir.glob('lib/tasks/*.rake').each { |l| load l unless File.exist?("local/tasks/#{l[10..-1]}") } if Dir.exist?('lib/tasks')
+Dir.glob('local/tasks/*.rake').each { |l| load l } if Dir.exist?('local/tasks')
