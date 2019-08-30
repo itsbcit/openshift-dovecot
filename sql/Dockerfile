@@ -1,8 +1,6 @@
 FROM bcit/alpine:3.9-supervisord
-# vim: syntax=dockerfile
-
-LABEL maintainer="jesse_weisner@bcit.ca, Juraj Ontkanin"
-LABEL version="2.3.6-r0"
+LABEL maintainer="jesse@weisner.ca, Juraj Ontkanin"
+LABEL build_id="1567137240"
 
 ENV DOCKERIZE_ENV production
 
@@ -23,6 +21,7 @@ ENV VMAIL_GID 10001
 
 ENV VMAIL_DATA /data/vmail
 ENV VMAIL_INDEX /data/index
+
 
 ENV DATABASE sql
 

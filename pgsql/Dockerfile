@@ -1,8 +1,6 @@
 FROM bcit/alpine:3.9-supervisord
-# vim: syntax=dockerfile
-
-LABEL maintainer="jesse_weisner@bcit.ca, Juraj Ontkanin"
-LABEL version="2.3.6-r0"
+LABEL maintainer="jesse@weisner.ca, Juraj Ontkanin"
+LABEL build_id="1567137240"
 
 ENV DOCKERIZE_ENV production
 
@@ -24,12 +22,13 @@ ENV VMAIL_GID 10001
 ENV VMAIL_DATA /data/vmail
 ENV VMAIL_INDEX /data/index
 
-ENV DATABASE mysql
+
+ENV DATABASE pgsql
 
 RUN apk add --no-cache \
     libcap \
     dovecot=2.3.6-r0 \
-    dovecot-mysql=2.3.6-r0 \
+    dovecot-pgsql=2.3.6-r0 \
     dovecot-fts-solr=2.3.6-r0 \
     dovecot-ldap=2.3.6-r0 \
     dovecot-lmtpd=2.3.6-r0 \

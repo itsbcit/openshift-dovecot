@@ -1,8 +1,6 @@
 FROM bcit/alpine:3.9-supervisord
-# vim: syntax=dockerfile
-
-LABEL maintainer="jesse_weisner@bcit.ca, Juraj Ontkanin"
-LABEL version="2.3.6-r0"
+LABEL maintainer="jesse@weisner.ca, Juraj Ontkanin"
+LABEL build_id="1567137240"
 
 ENV DOCKERIZE_ENV production
 
