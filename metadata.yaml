@@ -11,4 +11,4 @@ variants:
   'pgsql':
   'sql':
 vars:
-  dovecot_version: "2.3.6-r0"
+  dovecot_version: "2.3.7.2-r0"
