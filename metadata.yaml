@@ -10,5 +10,9 @@ variants:
   'mysql':
   'pgsql':
   'sql':
+suffixes:
+  - '2.3-latest'
+  - '2.3.7.2-r0'
+  - '2.3.7-latest'
 vars:
   dovecot_version: "2.3.7.2-r0"
