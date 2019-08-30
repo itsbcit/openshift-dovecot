@@ -2,6 +2,7 @@
 image_name: dovecot
 labels:
   maintainer: "jesse@weisner.ca, Juraj Ontkanin"
+  dovecot_version: "2.3.7.2"
 files:
   - 70-dovecot-conf.sh
   - 75-dovecot-keygen.sh
@@ -12,7 +13,6 @@ variants:
   'sql':
 suffixes:
   - '2.3-latest'
-  - '2.3.7.2-r0'
   - '2.3.7-latest'
 vars:
   dovecot_version: "2.3.7.2-r0"
