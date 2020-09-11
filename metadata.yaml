@@ -1,5 +1,5 @@
 ---
-image_name: dovecot
+image_name: openshift-dovecot
 labels:
   maintainer: "jesse@weisner.ca, Juraj Ontkanin"
   dovecot_version: "2.3.10.1"

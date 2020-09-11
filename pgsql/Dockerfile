@@ -1,7 +1,7 @@
 FROM bcit/alpine:3.9-supervisord
 LABEL maintainer="jesse@weisner.ca, Juraj Ontkanin"
 LABEL dovecot_version="2.3.10.1"
-LABEL build_id="1599853840"
+LABEL build_id="1599864830"
 
 ENV DOCKERIZE_ENV production
 
