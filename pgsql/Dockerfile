@@ -1,10 +1,11 @@
 FROM bcit/alpine:3.9-supervisord
 LABEL maintainer="jesse@weisner.ca, Juraj Ontkanin"
-LABEL build_id="1567137415"
+LABEL dovecot_version="2.3.10.1"
+LABEL build_id="1599853840"
 
 ENV DOCKERIZE_ENV production
 
-ENV VERSION "2.3.7.2-r0"
+ENV VERSION "2.3.10.1-r0"
 
 ENV CONFIGDIR /config
 ENV CONFIGDIR_D /config-d
@@ -27,14 +28,14 @@ ENV DATABASE pgsql
 
 RUN apk add --no-cache \
     libcap \
-    dovecot=2.3.7.2-r0 \
-    dovecot-pgsql=2.3.7.2-r0 \
-    dovecot-fts-solr=2.3.7.2-r0 \
-    dovecot-ldap=2.3.7.2-r0 \
-    dovecot-lmtpd=2.3.7.2-r0 \
-    dovecot-pigeonhole-plugin=2.3.7.2-r0 \
-    dovecot-pop3d=2.3.7.2-r0 \
-    dovecot-submissiond=2.3.7.2-r0
+    dovecot=2.3.10.1-r0 \
+    dovecot-pgsql=2.3.10.1-r0 \
+    dovecot-fts-solr=2.3.10.1-r0 \
+    dovecot-ldap=2.3.10.1-r0 \
+    dovecot-lmtpd=2.3.10.1-r0 \
+    dovecot-pigeonhole-plugin=2.3.10.1-r0 \
+    dovecot-pop3d=2.3.10.1-r0 \
+    dovecot-submissiond=2.3.10.1-r0
 
 RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/dovecot
 
