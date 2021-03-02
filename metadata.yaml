@@ -6,6 +6,7 @@ labels:
 files:
   - 70-dovecot-conf.sh
   - 75-dovecot-keygen.sh
+  - 80-dovecot-cleanpid.sh
 variants:
   '':
   'mysql':
@@ -15,7 +16,4 @@ suffixes:
   - '2.3-latest'
   - '2.3.10-latest'
 vars:
-  dovecot_version: "2.3.10.1-r0"
-
-
-  
+  dovecot_version: "2.3.10.1-r1"

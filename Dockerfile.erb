@@ -103,6 +103,7 @@ WORKDIR /var/lib/dovecot
 
 COPY 70-dovecot-conf.sh /docker-entrypoint.d/70-dovecot-conf.sh
 COPY 75-dovecot-keygen.sh /docker-entrypoint.d/75-dovecot-keygen.sh
+COPY 80-dovecot-cleanpid.sh /docker-entrypoint.d/80-dovecot-cleanpid.sh
 
 EXPOSE 143 993
 

@@ -1,11 +1,11 @@
 FROM bcit/alpine:3.9-supervisord-latest
 LABEL maintainer="jesse@weisner.ca, Juraj Ontkanin"
 LABEL dovecot_version="2.3.10.1"
-LABEL build_id="1603312170"
+LABEL build_id="1614643424"
 
 ENV DOCKERIZE_ENV production
 
-ENV VERSION "2.3.10.1-r0"
+ENV VERSION "2.3.10.1-r1"
 
 ENV CONFIGDIR /config
 ENV CONFIGDIR_D /config-d
@@ -28,14 +28,14 @@ ENV DATABASE mysql
 
 RUN apk add --no-cache \
     libcap \
-    dovecot=2.3.10.1-r0 \
-    dovecot-mysql=2.3.10.1-r0 \
-    dovecot-fts-solr=2.3.10.1-r0 \
-    dovecot-ldap=2.3.10.1-r0 \
-    dovecot-lmtpd=2.3.10.1-r0 \
-    dovecot-pigeonhole-plugin=2.3.10.1-r0 \
-    dovecot-pop3d=2.3.10.1-r0 \
-    dovecot-submissiond=2.3.10.1-r0
+    dovecot=2.3.10.1-r1 \
+    dovecot-mysql=2.3.10.1-r1 \
+    dovecot-fts-solr=2.3.10.1-r1 \
+    dovecot-ldap=2.3.10.1-r1 \
+    dovecot-lmtpd=2.3.10.1-r1 \
+    dovecot-pigeonhole-plugin=2.3.10.1-r1 \
+    dovecot-pop3d=2.3.10.1-r1 \
+    dovecot-submissiond=2.3.10.1-r1
 
 RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/dovecot
 
@@ -104,6 +104,7 @@ WORKDIR /var/lib/dovecot
 
 COPY 70-dovecot-conf.sh /docker-entrypoint.d/70-dovecot-conf.sh
 COPY 75-dovecot-keygen.sh /docker-entrypoint.d/75-dovecot-keygen.sh
+COPY 80-dovecot-cleanpid.sh /docker-entrypoint.d/80-dovecot-cleanpid.sh
 
 EXPOSE 143 993
 
